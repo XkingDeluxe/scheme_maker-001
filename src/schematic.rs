@@ -13,11 +13,12 @@ pub struct Schematic{
 impl Schematic{
     #[allow(dead_code)]
     pub fn new(file_name: &str) -> Schematic{
-        let file = OpenOptions::new().write(true).read(true).truncate(true).open(file_name);
+        let txt_name = file_name.to_owned()+".txt";
+        let file = OpenOptions::new().write(true).read(true).truncate(true).open(txt_name.clone());
         let create_file = match file {
             Ok(file) => file,
             Err(e) => match e.kind() {
-                ErrorKind::NotFound => OpenOptions::new().write(true).read(true).create(true).open(file_name).unwrap(),
+                ErrorKind::NotFound => OpenOptions::new().write(true).read(true).create(true).open(txt_name).unwrap(),
                 other_error => {
                     panic!("Problem opening the file: {:?}", other_error);
                 }
@@ -281,7 +282,6 @@ impl Schematic{
             //Still need to implement 2 connections connecting to eachother!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-
         }
         
         if comp1_char_index > comp2_char_index {
@@ -339,25 +339,25 @@ impl Schematic{
             if comp_value == "~" {
                 info_hold.push(ComponentHold::DynamicIndex(read_buffer[2..exclam_index].parse().unwrap()));
             }else{
-                let prefix_multiplier:f64 = match read_buffer.chars().nth(exclam_index-1).unwrap(){
-                    'P'=>1000000000000000.0,
-                    'T'=>1000000000000.0,
-                    'G'=>1000000000.0,
-                    'M'=>1000000.0,
-                    'K'=>1000.0,
-                    'H'=>100.0,
-                    'D'=>10.0,
-                    'd'=>0.1,
-                    'c'=>0.01,
-                    'm'=>0.001,
-                    'u'=>0.000001,
-                    'n'=>0.000000001,
-                    'p'=>0.000000000001,
-                    'f'=>0.000000000000001,
-                    _ => 1.0,
+                let prefix = match read_buffer.chars().nth(exclam_index-1).unwrap(){
+                    'P'=>CompPrefix::PETA,
+                    'T'=>CompPrefix::PETA,
+                    'G'=>CompPrefix::PETA,
+                    'M'=>CompPrefix::PETA,
+                    'K'=>CompPrefix::PETA,
+                    'H'=>CompPrefix::PETA,
+                    'D'=>CompPrefix::PETA,
+                    'd'=>CompPrefix::PETA,
+                    'c'=>CompPrefix::PETA,
+                    'm'=>CompPrefix::PETA,
+                    'u'=>CompPrefix::PETA,
+                    'n'=>CompPrefix::PETA,
+                    'p'=>CompPrefix::PETA,
+                    'f'=>CompPrefix::PETA,
+                    _ => CompPrefix::NONE,
                 };
                 let value: f64 = comp_value.parse().unwrap();
-                info_hold.push(ComponentHold::Value(prefix_multiplier*value));
+                info_hold.push(ComponentHold::Value(CompPrefix::getFactor(prefix)*value));
             }
 
             let con_1:u8 = read_buffer[exclam_index+1..slash_index].parse().unwrap();
@@ -402,7 +402,7 @@ impl Schematic{
     }
 
     #[allow(dead_code)]
-    pub fn run(){
+    pub fn run(&self){
 
     }
 }

@@ -25,7 +25,27 @@ pub enum CompPrefix {
     NANO,
     PICO,
     FEMTO
-
+}
+impl CompPrefix {
+    pub fn getFactor(p: CompPrefix) -> f64{
+        match p {
+            CompPrefix::PETA => 1000000000000000.0,
+            CompPrefix::TERA => 1000000000000.0,
+            CompPrefix::GIGA => 1000000000.0,
+            CompPrefix::MEGA => 1000000.0,
+            CompPrefix::KILO => 1000.0,
+            CompPrefix::HECTO => 100.0,
+            CompPrefix::DECA => 10.0,
+            CompPrefix::NONE => 1.0,
+            CompPrefix::DECI => 0.1,
+            CompPrefix::CENTI => 0.01,
+            CompPrefix::MILLI => 0.001,
+            CompPrefix::MICRO => 0.000001,
+            CompPrefix::NANO => 0.000000001,
+            CompPrefix::PICO => 0.000000000001,
+            CompPrefix::FEMTO => 0.0000000000001,
+        }
+    }
 }
 #[derive(Debug, Copy, Clone)]
 pub enum ComponentHold{
